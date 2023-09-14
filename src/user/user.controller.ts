@@ -1,60 +1,42 @@
+// user.controller.ts
 import {
-  Body,
   Controller,
-  Delete,
   Get,
   Param,
   Post,
   Put,
+  Delete,
+  Body,
 } from '@nestjs/common';
 import { CreateUserDto, UpdateUserDto } from './dto/create-user.dto';
+import { UserService } from './user.service';
 
 @Controller('user')
 export class UserController {
-  private users = [
-    { id: '1', name: 'parita', age: 22, email: 'parita.ganatra@yudiz.com' },
-    { id: '2', name: 'disha', age: 21, email: 'disha@gmail.com' },
-  ];
+  constructor(private readonly userService: UserService) {}
 
   @Get()
   getAllUsers() {
-    return this.users;
+    return this.userService.getAllUsers();
   }
 
   @Get(':id')
   getUserById(@Param('id') id: string) {
-    return this.users.find((user) => user.id === id);
+    return this.userService.getUserById(id);
   }
 
   @Post()
   createUser(@Body() createUserDto: CreateUserDto) {
-    const newUser = {
-      id: (this.users.length + 1).toString(),
-      ...createUserDto,
-    };
-    this.users.push(newUser);
-    return newUser;
+    return this.userService.createUser(createUserDto);
   }
 
   @Put(':id')
   updateUser(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    const index = this.users.findIndex((user) => user.id === id);
-
-    if (index !== -1) {
-      this.users[index] = { ...this.users[index], ...updateUserDto };
-      return this.users[index];
-    }
-    return null;
+    return this.userService.updateUser(id, updateUserDto);
   }
 
   @Delete(':id')
   deleteUser(@Param('id') id: string) {
-    const index = this.users.findIndex((user) => user.id === id);
-    if (index !== -1) {
-      const deletedUser = this.users[index];
-      this.users.splice(index, 1);
-      return deletedUser;
-    }
-    return null;
+    return this.userService.deleteUser(id);
   }
 }
