@@ -1,42 +1,80 @@
-// user.controller.ts
+// src/users/users.controller.ts
 import {
   Controller,
   Get,
-  Param,
   Post,
   Put,
   Delete,
+  Param,
   Body,
+  Request,
+  UseGuards,
 } from '@nestjs/common';
-import { CreateUserDto, UpdateUserDto } from './dto/create-user.dto';
-import { UserService } from './user.service';
+import { UsersService } from './user.service';
+import { UserDocument } from './user.model';
+import { UserGuard } from './user.guard';
+import { RoleGuard } from './role.guard';
+import { Role } from './role.enum';
 
-@Controller('user')
-export class UserController {
-  constructor(private readonly userService: UserService) {}
-
+@Controller('users')
+//use guard at controller level
+//@UseGuards(new UserGuard())
+export class UsersController {
+  constructor(private readonly UsersService: UsersService) {}
+  @UseGuards(UserGuard)
   @Get()
-  getAllUsers() {
-    return this.userService.getAllUsers();
+  async findAll(): Promise<UserDocument[]> {
+    return this.UsersService.findAll();
   }
 
   @Get(':id')
-  getUserById(@Param('id') id: string) {
-    return this.userService.getUserById(id);
+  async findOne(@Param('id') id: string): Promise<UserDocument | null> {
+    return this.UsersService.findOne(id);
   }
 
   @Post()
-  createUser(@Body() createUserDto: CreateUserDto) {
-    return this.userService.createUser(createUserDto);
+  //use guard at method level
+  // @UseGuards(new UserGuard())
+  async create(@Body() user: UserDocument): Promise<UserDocument> {
+    return this.UsersService.create(user);
   }
 
   @Put(':id')
-  updateUser(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.updateUser(id, updateUserDto);
+  async update(
+    @Param('id') id: string,
+    @Body() user: UserDocument,
+  ): Promise<UserDocument | null> {
+    return this.UsersService.update(id, user);
   }
 
   @Delete(':id')
-  deleteUser(@Param('id') id: string) {
-    return this.userService.deleteUser(id);
+  async remove(@Param('id') id: string): Promise<{ success: boolean }> {
+    const deleted = await this.UsersService.remove(id);
+    return { success: deleted };
   }
+//authentication apply
+  @Post('register')
+  async register(@Body() userDto: UserDocument) {
+    return this.UsersService.register(userDto);
+  }
+
+  @Post('login')
+  async login(@Body() userDto: UserDocument) {
+    return this.UsersService.login(userDto);
+  }
+
+ // @UseGuards(UserGuard)
+  // @Get('profile')
+  // async profile(): Promise<object> {
+  //   console.log("contyroller file");
+    
+  //   return this.UsersService.profile();
+  // }
+
+  @Get("nodeJs-developer")
+  //@UseGuards(UserGuard,new RoleGuard(Role.NodeJs_Developer))
+  async nodeJS_developer(): Promise<string> {
+    return "Nodejs developer"
+  }
+
 }

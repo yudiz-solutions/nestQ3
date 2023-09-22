@@ -1,7 +1,8 @@
 export class CreateUserDto {
   name: string;
-  age: number;
+  age: string;
   email: string;
+  password: string;
 }
 
 export class UpdateUserDto {

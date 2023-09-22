@@ -9,7 +9,10 @@ import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
 import { UserMiddleware } from './user.middleware';
 import { MongooseModule } from '@nestjs/mongoose';
-import { User, UserSchema } from './user/user.model';
+import { JwtModule } from '@nestjs/jwt';
+import { PassportModule } from '@nestjs/passport';
+import { jwtConstants } from './user/constant';
+//import { UsersModule } from './user/user.model';
 
 @Module({
   imports: [
@@ -17,7 +20,13 @@ import { User, UserSchema } from './user/user.model';
     MongooseModule.forRoot(
       'mongodb+srv://parita_ganatra:HTOdJf59P2dE7PDC@cluster0.tthvsqd.mongodb.net/nest_demo?retryWrites=true&w=majority',
     ),
-    MongooseModule.forFeature([{ name: 'User', schema: UserSchema }]),
+    //MongooseModule.forFeature([{ name: 'User', schema: UserSchema }]),
+    UserModule,
+    //PassportModule.register({ defaultStrategy: 'jwt' }),
+    // JwtModule.register({
+    //   secret: jwtConstants.secret,
+    //   signOptions: { expiresIn: '1h' }, // Adjust as needed
+    // }),
   ],
   controllers: [AppController],
   providers: [AppService],
