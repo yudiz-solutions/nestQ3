@@ -7,6 +7,8 @@ import {
   Delete,
   Param,
   Body,
+  ClassSerializerInterceptor,
+  UseInterceptors,
   Request,
   UseGuards,
 } from '@nestjs/common';
@@ -15,27 +17,39 @@ import { UserDocument } from './user.model';
 import { UserGuard } from './user.guard';
 import { RoleGuard } from './role.guard';
 import { Role } from './role.enum';
+import { UserEntity } from './serialization/user.entity';
 
 @Controller('users')
+@UseInterceptors(ClassSerializerInterceptor)
 //use guard at controller level
 //@UseGuards(new UserGuard())
 export class UsersController {
   constructor(private readonly UsersService: UsersService) {}
-  @UseGuards(UserGuard)
+  //@UseGuards(UserGuard)
   @Get()
   async findAll(): Promise<UserDocument[]> {
     return this.UsersService.findAll();
   }
 
-  @Get(':id')
+  @Get('findById/:id')
   async findOne(@Param('id') id: string): Promise<UserDocument | null> {
     return this.UsersService.findOne(id);
   }
 
+  @Get('/Serialization')
+  findUsingSerialization(): UserEntity {
+    return new UserEntity({
+      name: 'pari',
+      age: '23',
+      email: 'parita@gmail.com',
+      password: 'pwd',
+    });
+  }
   @Post()
   //use guard at method level
   // @UseGuards(new UserGuard())
   async create(@Body() user: UserDocument): Promise<UserDocument> {
+    console.log('create controller called');
     return this.UsersService.create(user);
   }
 
@@ -52,7 +66,7 @@ export class UsersController {
     const deleted = await this.UsersService.remove(id);
     return { success: deleted };
   }
-//authentication apply
+  //authentication apply
   @Post('register')
   async register(@Body() userDto: UserDocument) {
     return this.UsersService.register(userDto);
@@ -63,18 +77,17 @@ export class UsersController {
     return this.UsersService.login(userDto);
   }
 
- // @UseGuards(UserGuard)
+  // @UseGuards(UserGuard)
   // @Get('profile')
   // async profile(): Promise<object> {
   //   console.log("contyroller file");
-    
+
   //   return this.UsersService.profile();
   // }
 
-  @Get("nodeJs-developer")
+  @Get('nodeJs-developer')
   //@UseGuards(UserGuard,new RoleGuard(Role.NodeJs_Developer))
   async nodeJS_developer(): Promise<string> {
-    return "Nodejs developer"
+    return 'Nodejs developer';
   }
-
 }

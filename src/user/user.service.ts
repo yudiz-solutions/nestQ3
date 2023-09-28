@@ -16,6 +16,7 @@ export class UsersService {
 
   async create(user: CreateUserDto): Promise<UserDocument> {
     const createdUser = new this.userModel(user);
+    console.log('createdUser::', createdUser);
     return createdUser.save();
   }
 
@@ -50,14 +51,13 @@ export class UsersService {
 
     if (!user) throw new Error('User not found');
 
-    
-    if(!await bcrypt.compare(password,user.password)){
-      throw new BadRequestException('Password not match')
+    if (!(await bcrypt.compare(password, user.password))) {
+      throw new BadRequestException('Password not match');
     }
     //return user;
 
-const jwt=await this.jwtService.signAsync({email:user.email})
-return {jwt};
+    const jwt = await this.jwtService.signAsync({ email: user.email });
+    return { jwt };
     // const payload = { email };
     // const token = this.jwtService.sign(payload);
     // return { token };
@@ -65,7 +65,6 @@ return {jwt};
 
   async profile(): Promise<object> {
     //return req.user;
-    return {"key":"data come"}
+    return { key: 'data come' };
   }
-
 }

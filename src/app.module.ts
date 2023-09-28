@@ -9,8 +9,7 @@ import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
 import { UserMiddleware } from './user.middleware';
 import { MongooseModule } from '@nestjs/mongoose';
-import { JwtModule } from '@nestjs/jwt';
-import { PassportModule } from '@nestjs/passport';
+
 import { jwtConstants } from './user/constant';
 //import { UsersModule } from './user/user.model';
 

@@ -7,8 +7,7 @@ export interface User {
   age: string;
   email: string;
   password: string;
-  role:Role
-  
+  role: Role;
 }
 
 export type UserDocument = User & Document;
@@ -18,7 +17,7 @@ const UserSchema = new mongoose.Schema<UserDocument>({
   age: { type: String, required: true },
   email: { type: String, required: true },
   password: { type: String, required: true },
-  role:{type:String,enum:Role}
+  role: { type: String, enum: Role },
 });
 
 export const UserModel = mongoose.model<UserDocument>('User', UserSchema);
