@@ -56,11 +56,11 @@ export class UsersService {
     }
     //return user;
 
-    const jwt = await this.jwtService.signAsync({ email: user.email });
+    const jwt = await this.jwtService.signAsync({
+      email: user.email,
+      role: user.role,
+    });
     return { jwt };
-    // const payload = { email };
-    // const token = this.jwtService.sign(payload);
-    // return { token };
   }
 
   async profile(): Promise<object> {
